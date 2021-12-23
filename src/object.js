@@ -4,32 +4,33 @@ import _ from "lodash";
 
 export function object(entries) {
     return {
-	encode: function (object) {
+        encode: function (object) {
             return concat(
                 _.flatten(_.map(entries, function (entry, key) {
-		    if (_.has(object, key)) {
-			return [{bits: notNone}, entry.encode(object[key])];
-		    }
+                    //console.log("HAS", key, typeof key);
+                    if (object.hasOwnProperty(key)) {
+                        return [{bits: notNone}, entry.encode(object[key])];
+                    }
                     return {bits: none};
-	        })));
-	},
-	decode: function ({bits, blob}) {
-	    var object = {};
-	    _.each(entries, function (entry, key) {
-		if (isNone(bits)) {
-		    bits = bits.substr(1);
-		    return;
-		} else {
+                })));
+        },
+        decode: function ({bits, blob}) {
+            var object = {};
+            _.each(entries, function (entry, key) {
+                if (isNone(bits)) {
+                    bits = bits.substr(1);
+                    return;
+                } else {
                     bits = bits.substr(1);
                 }
 
-		var result = entry.decode({bits, blob});
-		bits = result.rest.bits;
+                var result = entry.decode({bits, blob});
+                bits = result.rest.bits;
                 blob = result.rest.blob;
-		object[key] = result.value;
-	    });
-	    return { value: object, rest: {bits, blob} };
-	}
+                object[key] = result.value;
+            });
+            return {value: object, rest: {bits, blob}};
+        }
     };
 }
 
