@@ -7,10 +7,10 @@ export function array(entry) {
             return concat([{blob: toVarN(array.length)}].concat(array.map(entry.encode)));
         },
         decode: function ({bits, blob}) {
-            var size;
+            let size;
             [size, blob] = fromVarN(blob);
-            var rest = {bits, blob};
-            var array = [], result, i;
+            let rest = {bits, blob};
+            let array = [], result, i;
             for (i = 0; i < size; i++) {
                 result = entry.decode(rest);
                 array[i] = result.value;

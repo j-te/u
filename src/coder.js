@@ -1,41 +1,41 @@
 import {bitsToN, nToBits, fromVarN, toVarN} from "./core.js";
 import {isObject, sortBy} from "./utils.js";
 
-var availableTypes = {};
+const availableTypes = {};
 
 export function register(name, type) {
     availableTypes[name] = type;
 }
 
 export function encode(coder, object) {
-    var {bits, blob} = coder.spec.encode(object);
+    const {bits, blob} = coder.spec.encode(object);
     return coder.encodedVersion + toVarN(bits.length) + bitsToN(bits) + blob;
 }
 
 export function decode(coders, string) {
-    var version, bitSize;
+    let version, bitSize;
     [version, string] = fromVarN(string);
     [bitSize, string] = fromVarN(string);
 
-    var coder = coders.find(c => c.version === version);
+    const coder = coders.find(c => c.version === version);
     if (!coder) {
 	throw new Error(`Invalid version: ${version}`);
     }
 
-    var bitCharSize = Math.ceil(bitSize / 6);
-    var bits = nToBits(string.substr(0, bitCharSize), bitSize);
-    var blob = string.substr(bitCharSize);
-    var result = coder.spec.decode({bits, blob});
-    var codersFiltered = coders.filter(coder => coder.version > version);
-    var pendingMigrations = codersFiltered.concat().sort(sortBy("version"));
+    const bitCharSize = Math.ceil(bitSize / 6);
+    const bits = nToBits(string.substr(0, bitCharSize), bitSize);
+    const blob = string.substr(bitCharSize);
+    const result = coder.spec.decode({bits, blob});
+    const codersFiltered = coders.filter(coder => coder.version > version);
+    const pendingMigrations = codersFiltered.concat().sort(sortBy("version"));
     return pendingMigrations.reduce((value, coder) => coder.migrate(value), result.value);
 }
 
 export function fromJson(version, jsonSpec, migrate) {
     function loop(spec) {
 	if (Array.isArray(spec)) {
-	    var method = spec[0];
-        var [ head, ...tail ] = spec;
+	    const method = spec[0];
+        const [ head, ...tail ] = spec;
 	    if (method === 'tuple') {
 		  return availableTypes.tuple(tail.map(loop));
 	    } else if (method === 'array') {
@@ -44,7 +44,7 @@ export function fromJson(version, jsonSpec, migrate) {
 		  return availableTypes[method].apply(null, tail);
 	    }
 	} else if (isObject(spec)) {
-	    var entries = Object.keys(spec).sort();
+	    const entries = Object.keys(spec).sort();
         const entriesMapped = entries.map((key) => {
             return [key, loop(spec[key])];
         });

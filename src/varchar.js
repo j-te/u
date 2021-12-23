@@ -7,7 +7,7 @@ export default function varchar() {
             return {bits: '', blob: toVarN(string.length) + string};
         },
         decode: function ({bits, blob}) {
-            var size;
+            let size;
             [size, blob] = fromVarN(blob);
             return {
                 value: blob.substr(0, size),

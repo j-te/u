@@ -7,9 +7,9 @@ export function tuple(entries) {
             return concat(entries.map((entry, i) => entry.encode(array[i])));
         },
         decode: function (rest) {
-            var array = [];
+            const array = [];
             entries.forEach((entry, i) => {
-                var result = entry.decode(rest);
+                const result = entry.decode(rest);
                 array[i] = result.value;
                 rest = result.rest;
             });

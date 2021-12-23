@@ -142,7 +142,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	function decode(coders, string) {
-	    var version, bitSize;
+	    var version = void 0,
+	        bitSize = void 0;
 
 	    var _fromVarN = (0, _core.fromVarN)(string);
 
@@ -287,7 +288,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function fromN(n) {
 	    var x = 0,
-	        index;
+	        index = void 0;
 	    for (var i = 0; i < n.length; i++) {
 	        index = availableCharacters.indexOf(n[i]);
 	        if (index === -1) {
@@ -339,7 +340,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function bitsToN(bits) {
 	    var result = '',
-	        char;
+	        char = void 0;
 	    while (bits) {
 	        char = bits.substr(0, 6);
 	        bits = bits.substr(6);
@@ -520,7 +521,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var bits = _ref.bits,
 	                blob = _ref.blob;
 
-	            var size;
+	            var size = void 0;
 
 	            var _fromVarN = (0, _core.fromVarN)(blob);
 
@@ -717,7 +718,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var bits = _ref.bits,
 	                blob = _ref.blob;
 
-	            var size;
+	            var size = void 0;
 
 	            var _fromVarN = (0, _core.fromVarN)(blob);
 
@@ -728,8 +729,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            var rest = { bits: bits, blob: blob };
 	            var array = [],
-	                result,
-	                i;
+	                result = void 0,
+	                i = void 0;
 	            for (i = 0; i < size; i++) {
 	                result = entry.decode(rest);
 	                array[i] = result.value;

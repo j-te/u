@@ -5,29 +5,29 @@ import _ from "lodash";
 import util from "util";
 import assert from "assert";
 
-var oneOf = jsc.nearray(jsc.json).smap((array) => {
-    var r = jsc.random(0, array.length - 1);
+const oneOf = jsc.nearray(jsc.json).smap((array) => {
+    const r = jsc.random(0, array.length - 1);
     return [['oneOf'].concat(array), array[r]];
 }, (x) => _.tail(x[0]));
 
-var boolean = jsc.bool.smap(bool => {
+const boolean = jsc.bool.smap(bool => {
     return [['boolean'], bool];
 }, ([spec, value]) => value);
 
-var integer = jsc.integer.smap(n => {
+const integer = jsc.integer.smap(n => {
     return [['integer'], n];
 }, ([spec, value]) => value);
 
-var varchar = jsc.string.smap(x => {
+const varchar = jsc.string.smap(x => {
     return [['varchar'], x];
 }, ([spec, value]) => value);
 
-var fixedchar = jsc.string.smap(x => {
+const fixedchar = jsc.string.smap(x => {
     return [['fixedchar', x.length], x];
 }, ([spec, value]) => value);
 
-var wrap = (object) => {
-    var spec = {}, sample = {};
+const wrap = (object) => {
+    const spec = {}, sample = {};
     _.each(object, (value, key) => {
         spec[key] = value[0];
         if (jsc.random(0, 5) !== 0) {
@@ -37,42 +37,42 @@ var wrap = (object) => {
     return [spec, sample];
 };
 
-var unwrap = (value) => {
-    var spec = value[0], sample = value[1];
-    var result = {};
+const unwrap = (value) => {
+    const spec = value[0], sample = value[1];
+    const result = {};
     _.each(spec, (value, key) => {
         result[key] = [value, sample[key]];
     });
     return result;
 };
 
-var wrapTuple = (array) => {
+const wrapTuple = (array) => {
     return [['tuple'].concat(_.map(array, ([spec, value]) => spec)), _.map(array, ([spec, value]) => value)];
 };
 
-var unwrapTuple = (wrapped) => {
+const unwrapTuple = (wrapped) => {
     return _.map(_.tail(wrapped[0]), (spec, i) => [spec, wrapped[1][i]]);
 };
 
-var wrapArray = ([spec, value]) => {
+const wrapArray = ([spec, value]) => {
     return [['array', spec], _.times(jsc.random(1, 20), _.constant(value))];
 };
 
-var unwrapArray = (wrapped) => {
+const unwrapArray = (wrapped) => {
     return [wrapped[0][1], wrapped[1][0]];
 };
 
-var generateObject = jsc.generator.recursive(
+const generateObject = jsc.generator.recursive(
     jsc.generator.oneof([oneOf.generator, boolean.generator, integer.generator, varchar.generator, fixedchar.generator]),
     function (gen) {
         return jsc.generator.oneof([jsc.generator.dict(gen).map(wrap), jsc.generator.nearray(gen).map(wrapTuple), gen.map(wrapArray)]);
     }
 );
 
-var shrinkObject = jsc.shrink.bless((value) => {
-    var spec = value[0];
+const shrinkObject = jsc.shrink.bless((value) => {
+    const spec = value[0];
     if (_.isArray(spec)) {
-        var type = spec[0];
+        const type = spec[0];
         switch (type) {
         case 'oneOf': return oneOf.shrink(value);
         case 'boolean': return boolean.shrink(value);
@@ -88,14 +88,14 @@ var shrinkObject = jsc.shrink.bless((value) => {
     }
 });
 
-var shrinkDictObject = (() => {
-    var pairShrink = jsc.shrink.pair(jsc.string.shrink, shrinkObject);
-    var arrayShrink = jsc.shrink.array(pairShrink);
+const shrinkDictObject = (() => {
+    const pairShrink = jsc.shrink.pair(jsc.string.shrink, shrinkObject);
+    const arrayShrink = jsc.shrink.array(pairShrink);
 
     return arrayShrink.smap(jsc.utils.pairArrayToDict, jsc.utils.dictToPairArray);
 })();
 
-var object = jsc.bless({
+const object = jsc.bless({
     generator: generateObject,
     shrink: shrinkObject,
     show: jsc.show
@@ -105,10 +105,10 @@ function validate(generator, debug) {
     return function () {
         this.timeout(Infinity);
         jsc.assert(jsc.forall(generator, (x) => {
-            var [spec, value] = x;
-            var coder = fromJson(1, spec);
-            var encoded = encode(coder, value);
-            var decoded = decode([coder], encoded);
+            const [spec, value] = x;
+            const coder = fromJson(1, spec);
+            const encoded = encode(coder, value);
+            const decoded = decode([coder], encoded);
             if (!_.isEqual(value, decoded)) {
                 console.log('spec ', spec);
                 console.log('value', util.inspect(value, {depth: null}));
@@ -122,9 +122,9 @@ function validate(generator, debug) {
 
 function validateExample(spec, value) {
     return () => {
-        var coder = fromJson(1, spec);
-        var encoded = encode(coder, value);
-        var decoded = decode([coder], encoded);
+        const coder = fromJson(1, spec);
+        const encoded = encode(coder, value);
+        const decoded = decode([coder], encoded);
         if (!_.isEqual(value, decoded)) {
             console.log('spec ', spec);
             console.log('value', util.inspect(value, {depth: null}));
@@ -168,7 +168,7 @@ describe('u', () => {
 
         it('should encode decode bits', () => {
             jsc.assert(jsc.forall("nearray nat", (xs) => {
-                var bits = _.map(xs, x => x.toString(2)).join('');
+                const bits = _.map(xs, x => x.toString(2)).join('');
                 return _.isEqual(nToBits(bitsToN(bits), bits.length), bits);
             }));
         });
@@ -196,11 +196,11 @@ describe('u', () => {
 
     describe('version', function () {
 	it('picks the correct version', function () {
-	    var version1 = fromJson(1, {a: ['integer']}),
+	    const version1 = fromJson(1, {a: ['integer']}),
 		version2 = fromJson(2, {a: ['boolean']}),
 		version3 = fromJson(3, {d: ['fixedchar', 2]});
 
-	    var coders = [version1, version2, version3];
+	    const coders = [version1, version2, version3];
 	    assert.deepEqual(decode(coders, encode(version1, {a: 10})), {a: 10});
 	    assert.deepEqual(decode(coders, encode(version2, {a: true})), {a: true});
 	    assert.deepEqual(decode(coders, encode(version3, {d: 'he'})), {d: 'he'});
@@ -210,7 +210,7 @@ describe('u', () => {
     describe('example', () => {
         it('works', () => {
             // used in README
-            var spec = {
+            const spec = {
                 lookingFor: ['oneOf', 'bride', 'groom'],
                 age: ['tuple', ['integer'] /* min */, ['integer'] /* max */],
                 religion: ['oneOf', 'Hindu', 'Muslim', 'Christian', 'Sikh', 'Parsi', 'Jain', 'Buddhist', 'Jewish', 'No Religion', 'Spiritual', 'Other'],
@@ -218,23 +218,23 @@ describe('u', () => {
                 onlyProfileWithPhoto: ['boolean']
             };
 
-            var v1 = fromJson(1, spec);
+            const v1 = fromJson(1, spec);
 
-            var encodedv1 = encode(v1, {lookingFor: 'bride', age: [25, 30], religion: 'Hindu', motherTongue: 'Bengali', onlyProfileWithPhoto: true});
+            const encodedv1 = encode(v1, {lookingFor: 'bride', age: [25, 30], religion: 'Hindu', motherTongue: 'Bengali', onlyProfileWithPhoto: true});
             assert.equal(encodedv1, 'bHhc9I-aqa');
             assert.deepEqual(decode([v1], encodedv1), {lookingFor: 'bride', age: [25, 30], religion: 'Hindu', motherTongue: 'Bengali', onlyProfileWithPhoto: true});
 
-            var newSpec = _.extend({}, spec, {
+            const newSpec = _.extend({}, spec, {
                 maritialStatus: ['oneOf', "Doesn't Matter", 'Never Married', 'Divorced', 'Widowed', 'Awaiting Divorce', 'Annulled']
             });
 
-            var v2 = fromJson(2, newSpec, function (old) {
+            const v2 = fromJson(2, newSpec, function (old) {
                 old.maritialStatus = "Doesn't Matter";
                 return old;
             });
 
             assert.deepEqual(decode([v1, v2], encodedv1), {lookingFor: 'bride', age: [25, 30], religion: 'Hindu', motherTongue: 'Bengali', onlyProfileWithPhoto: true, maritialStatus: "Doesn't Matter"});
-            var encodedv2 = encode(v2, {lookingFor: 'bride', age: [25, 30], religion: 'Hindu', motherTongue: 'Bengali', onlyProfileWithPhoto: true, maritialStatus: 'Never Married'});
+            const encodedv2 = encode(v2, {lookingFor: 'bride', age: [25, 30], religion: 'Hindu', motherTongue: 'Bengali', onlyProfileWithPhoto: true, maritialStatus: 'Never Married'});
             assert.equal(encodedv2, 'cHlc9I-aHaa');
             assert.deepEqual(decode([v1, v2], encodedv2), {lookingFor: 'bride', age: [25, 30], religion: 'Hindu', motherTongue: 'Bengali', onlyProfileWithPhoto: true, maritialStatus: 'Never Married'});
         });

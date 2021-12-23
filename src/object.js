@@ -4,8 +4,8 @@ import {register} from "./coder.js";
 export function object(entries) {
     return {
         encode: function (object) {
-            var mapped = [];
-            for (var [key, value] of Object.entries(entries)) {
+            const mapped = [];
+            for (const [key, value] of Object.entries(entries)) {
                 mapped.push(object.hasOwnProperty(key)
                     ? [{bits: notNone}, value.encode(object[key])]
                     : {bits: none});
@@ -13,7 +13,7 @@ export function object(entries) {
             return concat(mapped.flat());
         },
         decode: function ({bits, blob}) {
-            var object = {};
+            const object = {};
             Object.entries(entries).forEach(([key, entry]) => {
                 if (isNone(bits)) {
                     bits = bits.substr(1);
@@ -22,7 +22,7 @@ export function object(entries) {
                     bits = bits.substr(1);
                 }
 
-                var result = entry.decode({bits, blob});
+                const result = entry.decode({bits, blob});
                 bits = result.rest.bits;
                 blob = result.rest.blob;
                 object[key] = result.value;
