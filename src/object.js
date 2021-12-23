@@ -6,13 +6,14 @@ export function object(entries) {
     return {
         encode: function (object) {
             return concat(
-                _.flatten(_.map(entries, function (entry, key) {
-                    //console.log("HAS", key, typeof key);
-                    if (object.hasOwnProperty(key)) {
-                        return [{bits: notNone}, entry.encode(object[key])];
-                    }
-                    return {bits: none};
-                })));
+                _.flatten(
+                    _.map(entries, function (entry, key) {
+                        return object.hasOwnProperty(key)
+                            ? [{bits: notNone}, entry.encode(object[key])]
+                            : {bits: none};
+                    })
+                )
+            );
         },
         decode: function ({bits, blob}) {
             var object = {};
