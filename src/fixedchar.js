@@ -1,4 +1,4 @@
-import {register} from "./coder";
+import {register} from "./coder.js";
 
 export default function fixedChar(size) {
     return {

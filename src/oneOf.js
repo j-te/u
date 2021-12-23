@@ -1,5 +1,5 @@
-import {paddedBinary, bitsRequired} from "./core";
-import {register} from "./coder";
+import {paddedBinary, bitsRequired} from "./core.js";
+import {register} from "./coder.js";
 
 export default function oneOf(...choices) {
     var bitSize = bitsRequired(choices.length - 1);

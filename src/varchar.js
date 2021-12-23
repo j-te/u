@@ -1,5 +1,5 @@
-import {fromVarN, toVarN} from "./core";
-import {register} from "./coder";
+import {fromVarN, toVarN} from "./core.js";
+import {register} from "./coder.js";
 
 export default function varchar() {
     return {

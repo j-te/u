@@ -1,6 +1,6 @@
-import {concat} from "./core";
+import {concat} from "./core.js";
+import {register} from "./coder.js";
 import _ from "lodash";
-import {register} from "./coder";
 
 export function tuple(entries) {
     return {

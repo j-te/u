@@ -1,6 +1,6 @@
-import {concat, fromVarN, toVarN} from "./core";
+import {concat, fromVarN, toVarN} from "./core.js";
+import {register} from "./coder.js";
 import _ from "lodash";
-import {register} from "./coder";
 
 export function array(entry) {
     return {

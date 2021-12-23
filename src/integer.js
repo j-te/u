@@ -1,5 +1,5 @@
-import {paddedBinary} from "./core";
-import {register} from "./coder";
+import {paddedBinary} from "./core.js";
+import {register} from "./coder.js";
 
 export default function integer() {
     return {

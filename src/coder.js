@@ -1,5 +1,5 @@
 import _ from "lodash";
-import {bitsToN, nToBits, fromVarN, toVarN} from "./core";
+import {bitsToN, nToBits, fromVarN, toVarN} from "./core.js";
 
 var availableTypes = {};
 

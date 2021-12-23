@@ -1,5 +1,5 @@
-import oneOf from "./oneOf";
-import {register} from "./coder";
+import oneOf from "./oneOf.js";
+import {register} from "./coder.js";
 
 export default function boolean() {
     return oneOf(true, false);

@@ -1,5 +1,5 @@
-import {fromJson, encode, decode} from "../src/u";
-import {nToBits, bitsToN, fromN, toN, fromVarN, toVarN, paddedBinary, paddedN} from "../src/core";
+import {fromJson, encode, decode} from "../src/u.js";
+import {nToBits, bitsToN, fromN, toN, fromVarN, toVarN, paddedBinary, paddedN} from "../src/core.js";
 import jsc from "jsverify";
 import _ from "lodash";
 import util from "util";

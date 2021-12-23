@@ -1,6 +1,6 @@
-import {concat, isNone, none, notNone} from "./core";
+import {concat, isNone, none, notNone} from "./core.js";
+import {register} from "./coder.js";
 import _ from "lodash";
-import {register} from "./coder";
 
 export function object(entries) {
     return {
