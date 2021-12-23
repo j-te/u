@@ -1,11 +1,10 @@
 import {concat, fromVarN, toVarN} from "./core.js";
 import {register} from "./coder.js";
-import _ from "lodash";
 
 export function array(entry) {
     return {
         encode: function (array) {
-            return concat([{blob: toVarN(array.length)}].concat(_.map(array, entry.encode)));
+            return concat([{blob: toVarN(array.length)}].concat(array.map(entry.encode)));
         },
         decode: function ({bits, blob}) {
             var size;
