@@ -1,5 +1,5 @@
-import _ from "lodash";
 import {bitsToN, nToBits, fromVarN, toVarN} from "./core.js";
+import {isObject, sortBy} from "./utils.js";
 
 var availableTypes = {};
 
@@ -17,7 +17,7 @@ export function decode(coders, string) {
     [version, string] = fromVarN(string);
     [bitSize, string] = fromVarN(string);
 
-    var coder = _.find(coders, c => c.version === version);
+    var coder = coders.find(c => c.version === version);
     if (!coder) {
 	throw new Error(`Invalid version: ${version}`);
     }
@@ -26,26 +26,29 @@ export function decode(coders, string) {
     var bits = nToBits(string.substr(0, bitCharSize), bitSize);
     var blob = string.substr(bitCharSize);
     var result = coder.spec.decode({bits, blob});
-    var pendingMigrations = _.sortBy(_.filter(coders, coder => coder.version > version), 'version');
-    return _.reduce(pendingMigrations, (value, coder) => coder.migrate(value), result.value);
+    var codersFiltered = coders.filter(coder => coder.version > version);
+    var pendingMigrations = codersFiltered.concat().sort(sortBy("version"));
+    return pendingMigrations.reduce((value, coder) => coder.migrate(value), result.value);
 }
 
 export function fromJson(version, jsonSpec, migrate) {
     function loop(spec) {
-	if (_.isArray(spec)) {
+	if (Array.isArray(spec)) {
 	    var method = spec[0];
+        var [ head, ...tail ] = spec;
 	    if (method === 'tuple') {
-		return availableTypes.tuple(_.map(_.tail(spec), loop));
+		  return availableTypes.tuple(tail.map(loop));
 	    } else if (method === 'array') {
-		return availableTypes.array(loop(spec[1]));
+		  return availableTypes.array(loop(spec[1]));
             } else {
-		return availableTypes[method].apply(null, _.tail(spec));
+		  return availableTypes[method].apply(null, tail);
 	    }
-	} else if (_.isObject(spec)) {
-	    var entries = _.keys(spec).sort();
-	    return availableTypes.object(_.fromPairs(_.map(entries, function (key) {
-                return [key, loop(spec[key])];
-	    })));
+	} else if (isObject(spec)) {
+	    var entries = Object.keys(spec).sort();
+        const entriesMapped = entries.map((key) => {
+            return [key, loop(spec[key])];
+        });
+        return availableTypes.object(Object.fromEntries(entriesMapped));
 	}
     }
 
