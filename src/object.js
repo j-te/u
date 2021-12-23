@@ -1,6 +1,5 @@
 import {concat, isNone, none, notNone} from "./core.js";
 import {register} from "./coder.js";
-import _ from "lodash";
 
 export function object(entries) {
     return {
@@ -15,7 +14,7 @@ export function object(entries) {
         },
         decode: function ({bits, blob}) {
             var object = {};
-            _.each(entries, function (entry, key) {
+            Object.entries(entries).forEach(([key, entry]) => {
                 if (isNone(bits)) {
                     bits = bits.substr(1);
                     return;
