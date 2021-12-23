@@ -5,6 +5,8 @@ import _ from "lodash";
 import util from "util";
 import assert from "assert";
 
+// todo: review testing/migrate/remove lodash
+
 const oneOf = jsc.nearray(jsc.json).smap((array) => {
     const r = jsc.random(0, array.length - 1);
     return [['oneOf'].concat(array), array[r]];
