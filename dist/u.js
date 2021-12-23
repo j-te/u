@@ -186,7 +186,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var method = spec[0];
 
 	            var _spec = _toArray(spec),
-	                head = _spec[0],
 	                tail = _spec.slice(1);
 
 	            if (method === 'tuple') {

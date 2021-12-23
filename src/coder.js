@@ -35,7 +35,7 @@ export function fromJson(version, jsonSpec, migrate) {
     function loop(spec) {
 	if (Array.isArray(spec)) {
 	    const method = spec[0];
-        const [ head, ...tail ] = spec;
+        const [, ...tail ] = spec;
 	    if (method === 'tuple') {
 		  return availableTypes.tuple(tail.map(loop));
 	    } else if (method === 'array') {
