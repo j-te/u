@@ -1,5 +1,3 @@
-import _ from "lodash";
-
 export function bitsRequired(maxValue) {
     if (maxValue === 0) {
         return 1;
@@ -13,7 +11,7 @@ export function paddedBinary(value, bitSize) {
         throw new Error(`Invalid value or bitSize: can't fit ${value} in ${bitSize} bits`);
     }
 
-    return _.repeat('0', bitSize - binary.length) + binary;
+    return '0'.repeat(bitSize - binary.length) + binary;
 }
 
 export var notNone = paddedBinary(0, 1);
@@ -24,7 +22,7 @@ export function isNone(bits) {
 }
 
 export function concat(encoded) {
-    return _.reduce(encoded, function (acc, obj) {
+    return encoded.reduce((acc, obj) => {
         return {bits: acc.bits + (obj.bits || ''), blob: acc.blob + (obj.blob || '')};
     }, {bits: '', blob: ''});
 }
@@ -97,7 +95,7 @@ export function paddedN(x, charSize) {
         throw new Error(`Invalid charSize: can't encode ${x} in ${charSize} chars`);
     }
 
-    return _.repeat(availableCharacters[0], charSize - r.length) + r;
+    return availableCharacters[0].repeat(charSize - r.length) + r;
 }
 
 export function bitsToN(bits) {
@@ -107,7 +105,7 @@ export function bitsToN(bits) {
         bits = bits.substr(6);
 
         if (char.length < 6) {
-            char += _.repeat('0', 6 - char.length);
+            char += '0'.repeat(6 - char.length);
         }
         result += toN(parseInt(char, 2));
     }
@@ -116,5 +114,5 @@ export function bitsToN(bits) {
 }
 
 export function nToBits(chars, bitSize) {
-    return _.map(chars, c => paddedBinary(fromN(c), 6)).join('').substr(0, bitSize);
+    return [...chars].map(c => paddedBinary(fromN(c), 6)).join('').substr(0, bitSize);
 }
