@@ -5,15 +5,13 @@ import _ from "lodash";
 export function object(entries) {
     return {
         encode: function (object) {
-            return concat(
-                _.flatten(
-                    _.map(entries, function (entry, key) {
-                        return object.hasOwnProperty(key)
-                            ? [{bits: notNone}, entry.encode(object[key])]
-                            : {bits: none};
-                    })
-                )
-            );
+            var mapped = [];
+            for (var [key, value] of Object.entries(entries)) {
+                mapped.push(object.hasOwnProperty(key)
+                    ? [{bits: notNone}, value.encode(object[key])]
+                    : {bits: none});
+            }
+            return concat(mapped.flat());
         },
         decode: function ({bits, blob}) {
             var object = {};
